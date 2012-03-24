@@ -17,8 +17,26 @@ namespace AttributeRouting.Specs.Subjects
             return Content("");
         }
 
+        [GET("InlineDefaultsAndConstraints/{number:int=5}/{word:string(10)=moon}")]
+        public ActionResult InlineDefaultsAndConstraints()
+        {
+            return Content("");
+        }
+
         [GET("Optionals/{p1?}/{?p2}/{?p3?}")]
         public ActionResult Optionals(string p1, string p2, string p3)
+        {
+            return Content("");
+        }
+
+        [GET("OptionalsAndConstraints/{p1:int?}/{?p2:int}/{?p3:int?}")]
+        public ActionResult OptionalsAndConstraints(int p1, int p2, int p3)
+        {
+            return Content("");
+        }
+
+        [GET("OptionalsAndConstraintsWithParameters/{p1:string(10)?}/{?p2:string(10)}/{?p3:string(10)?}")]
+        public ActionResult OptionalsAndConstraintsWithParameters(string p1, string p2, string p3)
         {
             return Content("");
         }

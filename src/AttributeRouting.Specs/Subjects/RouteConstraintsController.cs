@@ -1,4 +1,5 @@
 using System.Web.Mvc;
+using AttributeRouting.Constraints;
 
 namespace AttributeRouting.Specs.Subjects
 {
@@ -11,7 +12,7 @@ namespace AttributeRouting.Specs.Subjects
             return Content("");
         }
 
-        [GET(@"InlineConstraints/{number(\d+)}/{word(\w{2})}/{alphanum([A-Za-z0-9]*)}/{capture((gotcha))}")]
+        [GET(@"InlineConstraints/{number:int}/{word:string(10)}/{alphanum:regex([A-Za-z0-9]*)}/{capture:regex((gotcha))}")]
         public ActionResult InlineConstraints(long number, string word)
         {
             return Content("");

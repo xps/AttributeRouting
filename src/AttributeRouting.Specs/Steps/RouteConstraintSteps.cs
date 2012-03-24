@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using AttributeRouting.Constraints;
 using AttributeRouting.Framework;
 using NUnit.Framework;
 using TechTalk.SpecFlow;
@@ -16,6 +17,26 @@ namespace AttributeRouting.Specs.Steps
             Assert.That(route, Is.Not.Null);
             Assert.That(route.Constraints[key], Is.TypeOf(typeof(RegexRouteConstraint)));
             Assert.That(((RegexRouteConstraint)route.Constraints[key]).Pattern, Is.EqualTo(pattern));
+        }
+
+        [Then(@"the parameter ""(.*?)"" is of type ""(.*?)""")]
+        public void ThenTheParameterIsOfType(string key, string type)
+        {
+            var route = ScenarioContext.Current.GetFetchedRoutes().First();
+            var constraintType = typeof(AttributeRoute).Assembly.GetType("AttributeRouting.Constraints." + type + "RouteConstraint", true, true);
+
+            Assert.That(route, Is.Not.Null);
+            Assert.That(route.Constraints[key], Is.TypeOf(constraintType));
+        }
+
+        [Then(@"the parameter ""(.*?)"" is of type ""string"" and has a maximum length of (\d*?)")]
+        public void ThenTheParameterIsOfType(string key, int maxLength)
+        {
+            var route = ScenarioContext.Current.GetFetchedRoutes().First();
+
+            Assert.That(route, Is.Not.Null);
+            Assert.That(route.Constraints[key], Is.TypeOf(typeof(StringRouteConstraint)));
+            Assert.That(((StringRouteConstraint)route.Constraints[key]).MaxLength, Is.EqualTo(maxLength));
         }
 
         [Then(@"the route named ""(.*)"" has a constraint on ""(.*)"" of ""(.*)""")]

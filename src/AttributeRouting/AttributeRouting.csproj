@@ -57,6 +57,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AreaConfiguration.cs" />
+    <Compile Include="Constraints\DecimalRouteConstraint.cs" />
+    <Compile Include="Constraints\DoubleRouteConstraint.cs" />
+    <Compile Include="Constraints\FloatRouteConstraint.cs" />
+    <Compile Include="Constraints\LongRouteConstraint.cs" />
+    <Compile Include="Constraints\RouteConstraintFactory.cs" />
+    <Compile Include="Constraints\BoolRouteConstraint.cs" />
+    <Compile Include="Constraints\EnumRouteConstraint.cs" />
+    <Compile Include="Constraints\IntRouteConstraint.cs" />
+    <Compile Include="Constraints\InvalidRouteConstraintException.cs" />
+    <Compile Include="Constraints\StringRouteConstraint.cs" />
     <Compile Include="Framework\Localization\ControllerTranslationBuilder.cs" />
     <Compile Include="Helpers\ExpressionHelper.cs" />
     <Compile Include="Helpers\HttpRequestBaseExtensions.cs" />
@@ -77,8 +87,8 @@
     <Compile Include="Logging\LogRoutesHandler.cs" />
     <Compile Include="RouteConventionAttribute.cs" />
     <Compile Include="RoutePrefixAttribute.cs" />
-    <Compile Include="RegexRouteConstraint.cs" />
-    <Compile Include="RegexRouteConstraintAttribute.cs" />
+    <Compile Include="Constraints\RegexRouteConstraint.cs" />
+    <Compile Include="Constraints\RegexRouteConstraintAttribute.cs" />
     <Compile Include="RouteAreaAttribute.cs" />
     <Compile Include="RouteConstraintAttribute.cs" />
     <Compile Include="RouteDefaultAttribute.cs" />

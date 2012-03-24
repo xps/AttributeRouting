@@ -104,9 +104,9 @@ this.FeatureBackground();
 #line 12
  testRunner.Then("the route url is \"InlineConstraints/{number}/{word}/{alphanum}/{capture}\"");
 #line 13
- testRunner.Then("the parameter \"number\" is constrained by the pattern \"\\d+\"");
+ testRunner.Then("the parameter \"number\" is of type \"int\"");
 #line 14
- testRunner.Then("the parameter \"word\" is constrained by the pattern \"\\w{2}\"");
+ testRunner.Then("the parameter \"word\" is of type \"string\" and has a maximum length of 10");
 #line 15
  testRunner.Then("the parameter \"alphanum\" is constrained by the pattern \"[A-Za-z0-9]*\"");
 #line 16

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Web.Routing;
-using AttributeRouting.Framework.Localization;
+using AttributeRouting.Constraints;
 using AttributeRouting.Helpers;
 
 namespace AttributeRouting.Framework
@@ -156,9 +156,12 @@ namespace AttributeRouting.Framework
             var urlParameters = GetUrlParameterContents(routeSpec.RouteUrl);
 
             // Inspect the url for optional parameters, specified with a leading or trailing (or both) ?
-            foreach (var parameter in urlParameters.Where(p => Regex.IsMatch(p, @"^\?|\?$")))
+            foreach (var parameter in urlParameters.Where(p => p.StartsWith("?") || p.EndsWith("?")))
             {
                 var parameterName = parameter.Trim('?');
+
+                if (parameterName.Contains(':'))
+                    parameterName = parameterName.Substring(0, parameterName.IndexOf(':'));
 
                 if (defaults.ContainsKey(parameterName))
                     continue;
@@ -167,10 +170,13 @@ namespace AttributeRouting.Framework
             }
 
             // Inline defaults
-            foreach (var parameter in urlParameters.Where(p => Regex.IsMatch(p, @"^.*=.*$")))
+            foreach (var parameter in urlParameters.Where(p => p.Contains('=')))
             {
                 var indexOfEquals = parameter.IndexOf('=');
                 var parameterName = parameter.Substring(0, indexOfEquals);
+
+                if (parameterName.Contains(':'))
+                    parameterName = parameterName.Substring(0, parameterName.IndexOf(':'));
 
                 if (defaults.ContainsKey(parameterName))
                     continue;
@@ -200,16 +206,33 @@ namespace AttributeRouting.Framework
                 constraints.Add("httpMethod", new RestfulHttpMethodConstraint(routeSpec.HttpMethods));
 
             // Inline constraints
-            foreach (var parameter in GetUrlParameterContents(routeSpec.RouteUrl).Where(p => Regex.IsMatch(p, @"^.*\(.*\)$")))
+            foreach (var parameter in GetUrlParameterContents(routeSpec.RouteUrl).Where(p => p.Contains(":")).Select(p => p.Trim('?')))
             {
-                var indexOfOpenParen = parameter.IndexOf('(');
-                var parameterName = parameter.Substring(0, indexOfOpenParen);
+                var indexOfColumn = parameter.IndexOf(':');
+                var parameterName = parameter.Substring(0, indexOfColumn);
 
                 if (constraints.ContainsKey(parameterName))
                     continue;
 
-                var regexPattern = parameter.Substring(indexOfOpenParen + 1, parameter.Length - indexOfOpenParen - 2);
-                constraints.Add(parameterName, new RegexRouteConstraint(regexPattern));
+                var constraintDefinition = parameter.Substring(indexOfColumn + 1, parameter.Length - indexOfColumn - 1);
+                if (constraintDefinition.Contains('='))
+                    constraintDefinition = constraintDefinition.Substring(0, constraintDefinition.IndexOf('='));
+
+                IRouteConstraint constraint;
+
+                if (Regex.IsMatch(constraintDefinition, @"^.*\(.*\)$"))
+                {
+                    // Constraint of the form "firstName:string(50)"
+                    var indexOfOpenParen = constraintDefinition.IndexOf('(');
+                    var constraintType = constraintDefinition.Substring(0, indexOfOpenParen);
+                    var constraintParams = constraintDefinition.Substring(indexOfOpenParen + 1, constraintDefinition.Length - indexOfOpenParen - 2);
+                    constraint = RouteConstraintFactory.GetConstraint(constraintType, constraintParams.SplitAndTrim(new[] { "/" }));
+                }
+                else
+                    // Constraint of the form "id:int"
+                    constraint = RouteConstraintFactory.GetConstraint(constraintDefinition);
+
+                constraints.Add(parameterName, constraint);
             }
 
             // Attribute-based constraints
@@ -263,7 +286,7 @@ namespace AttributeRouting.Framework
             {
                 @"(?<=\{)\?", // leading question mark (used to specify optional param)
                 @"\?(?=\})", // trailing question mark (used to specify optional param)
-                @"\(.*?\)(?=\})", // stuff inside parens (used to specify inline regex route constraint)
+                @"\:(.*?)(\(.*?\))?((?=\})|(?=\?\}))", // inline constraint type and parameters
                 @"=.*?(?=\})", // equals and value (used to specify inline parameter default value)
             };
 

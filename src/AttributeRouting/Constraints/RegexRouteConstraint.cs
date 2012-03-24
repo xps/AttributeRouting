@@ -1,29 +1,26 @@
 ﻿using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Routing;
 
-namespace AttributeRouting
+namespace AttributeRouting.Constraints
 {
     /// <summary>
-    /// Constrains a url parameter by a regex pattern.
+    /// Applies a regex constraint against the associated url parameter.
     /// </summary>
-    public class RegexRouteConstraintAttribute : RouteConstraintAttribute
+    public class RegexRouteConstraint : IRouteConstraint
     {
         /// <summary>
-        /// Specify a regex constraint for a url parameter defined in a RouteAttribute applied to this action.
+        /// Applies a regex constraint against the associated url parameter.
         /// </summary>
-        /// <param name="key">The key of the url parameter</param>
         /// <param name="pattern">The regex pattern used to constrain the url parameter</param>
-        public RegexRouteConstraintAttribute(string key, string pattern)
-            : this(key, pattern, RegexOptions.None) {}
+        public RegexRouteConstraint(string pattern) : this(pattern, RegexOptions.None) {}
 
         /// <summary>
-        /// Specify a regex constraint for a url parameter defined in a RouteAttribute applied to this action.
+        /// Applies a regex constraint against the associated url parameter.
         /// </summary>
-        /// <param name="key">The key of the url parameter</param>
         /// <param name="pattern">The regex pattern used to constrain the url parameter</param>
         /// <param name="options">The RegexOptions used when testing the url parameter value</param>
-        public RegexRouteConstraintAttribute(string key, string pattern, RegexOptions options)
-            : base(key)
+        public RegexRouteConstraint(string pattern, RegexOptions options)
         {
             Pattern = pattern;
             Options = options;
@@ -39,9 +36,16 @@ namespace AttributeRouting
         /// </summary>
         public RegexOptions Options { get; set; }
 
-        public override IRouteConstraint Constraint
+        public bool Match(HttpContextBase httpContext, Route route, string parameterName, RouteValueDictionary values,
+                          RouteDirection routeDirection)
         {
-            get { return new RegexRouteConstraint(Pattern, Options); }
+            var value = values[parameterName];
+            if (value == null)
+                return true;
+
+            var valueAsString = value.ToString();
+
+            return Regex.IsMatch(valueAsString, Pattern, Options);
         }
     }
 }

@@ -151,6 +151,66 @@ this.FeatureBackground();
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Mixing inline optional parameters and constraints")]
+        public virtual void MixingInlineOptionalParametersAndConstraints()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Mixing inline optional parameters and constraints", ((string[])(null)));
+#line 28
+this.ScenarioSetup(scenarioInfo);
+#line 3
+this.FeatureBackground();
+#line 29
+ testRunner.When("I fetch the routes for the RouteDefaults controller\'s OptionalsAndConstraints act" +
+                    "ion");
+#line 30
+ testRunner.Then("the route url is \"OptionalsAndConstraints/{p1}/{p2}/{p3}\"");
+#line 31
+  testRunner.And("the parameter \"p1\" is of type \"int\"");
+#line 32
+  testRunner.And("the parameter \"p2\" is of type \"int\"");
+#line 33
+  testRunner.And("the parameter \"p3\" is of type \"int\"");
+#line 34
+  testRunner.And("the parameter \"p1\" is optional");
+#line 35
+  testRunner.And("the parameter \"p2\" is optional");
+#line 36
+  testRunner.And("the parameter \"p3\" is optional");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Mixing inline optional parameters and constraints with parameters")]
+        public virtual void MixingInlineOptionalParametersAndConstraintsWithParameters()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Mixing inline optional parameters and constraints with parameters", ((string[])(null)));
+#line 38
+this.ScenarioSetup(scenarioInfo);
+#line 3
+this.FeatureBackground();
+#line 39
+ testRunner.When("I fetch the routes for the RouteDefaults controller\'s OptionalsAndConstraintsWith" +
+                    "Parameters action");
+#line 40
+ testRunner.Then("the route url is \"OptionalsAndConstraintsWithParameters/{p1}/{p2}/{p3}\"");
+#line 41
+  testRunner.And("the parameter \"p1\" is of type \"string\" and has a maximum length of 10");
+#line 42
+  testRunner.And("the parameter \"p2\" is of type \"string\" and has a maximum length of 10");
+#line 43
+  testRunner.And("the parameter \"p3\" is of type \"string\" and has a maximum length of 10");
+#line 44
+  testRunner.And("the parameter \"p1\" is optional");
+#line 45
+  testRunner.And("the parameter \"p2\" is optional");
+#line 46
+  testRunner.And("the parameter \"p3\" is optional");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore
